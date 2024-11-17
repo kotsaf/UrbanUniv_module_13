@@ -7,7 +7,6 @@ api = ''
 bot = Bot(token=api)
 dp = Dispatcher(bot, storage=MemoryStorage())
 
-
 class UserState(StatesGroup):
     age = State()
     growth = State()
@@ -40,8 +39,16 @@ async def send_calories(message, state):
     await state.update_data(weight=message.text)
     data = await state.get_data()
     await message.answer(
-        f'Ваша дневная норма калорий: {10 * data["weight"] + 6.25 * int(data["growth"]) + 5 * int(data["age"]) + 5}')
+        f'Ваша дневная норма калорий: {10 * int(data["weight"]) + 6.25 * int(data["growth"]) + 5 * int(data["age"]) + 5}')
     await state.finish()
+
+@dp.message_handler(commands= ['start'])
+async def start_message(message):
+    await message.answer('Привет! Я бот помогающий твоему здоровью')
+
+@dp.message_handler()
+async def all_message(message):
+    await message.answer('Введите команду /start, чтобы начать общение')
 
 
 if __name__ == '__main__':
